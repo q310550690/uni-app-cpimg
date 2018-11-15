@@ -119,7 +119,7 @@ export default {
 									ctx.drawImage(imgFile, 0, 0, oW * scaleWidth, oH * scaleHeight);
 									break;
 							}
-							ctx.draw(true, () => {
+							ctx.draw(false, () => {
 								let sysInfo = uni.getSystemInfoSync()
 								let dWidth = 0, dHeight = 0
 								//#ifdef MP-WEIXIN
