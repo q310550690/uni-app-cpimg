@@ -134,20 +134,22 @@ export default {
 						break;
 				}
 				ctx.draw(false, () => {
-					let dWidth = 0, dHeight = 0
-					//#ifdef MP-WEIXIN
-					dWidth = Number(that.cWidth)
-					dHeight = Number(that.cHeight)
-					//#endif
-					//#ifdef APP-PLUS
-					dWidth = Math.round(Number(that.cWidth) / Number(sysInfo.pixelRatio))
-					dHeight = Math.round(Number(that.cHeight) / Number(sysInfo.pixelRatio))
-					//#endif
+					// let dWidth = 0, dHeight = 0
+					// //#ifdef MP-WEIXIN
+					// dWidth = Number(that.cWidth)
+					// dHeight = Number(that.cHeight)
+					// //#endif
+					// //#ifdef APP-PLUS
+					// dWidth = Math.round(Number(that.cWidth) / Number(sysInfo.pixelRatio))
+					// dHeight = Math.round(Number(that.cHeight) / Number(sysInfo.pixelRatio))
+					// //#endif
 					uni.canvasToTempFilePath({
 						width: Number(that.cWidth),
 						height: Number(that.cHeight),
-						destWidth: dWidth,
-						destHeight: dHeight,
+						destWidth: Number(that.cWidth),
+						destHeight: Number(that.cHeight),
+						// destWidth: dWidth,
+						// destHeight: dHeight,
 						canvasId: '_myCanvas',
 						fileType: 'jpg',
 						quality: Number(that.ql),
