@@ -75,16 +75,22 @@ export default {
 			uni.getImageInfo({
 				src: imgFile,
 				success: function (image) {
+					// #ifndef H5
 					// 如果图片的大小大于设定值才压缩
 					uni.getFileInfo({
 						filePath: imgFile,
 						success: function (res) {
-							_img(image,res.size)
+							_img(image, res.size)
 						},
 						fail: function (e) {
 							that._err(e)
 						}
 					})
+					// #endif
+					// #ifdef H5
+					// H5 端都压缩图片
+					_img(image, 0)
+					// #endif 
 				},
 				fail: function (e) {
 					that._err(e)
@@ -134,22 +140,11 @@ export default {
 						break;
 				}
 				ctx.draw(false, () => {
-					// let dWidth = 0, dHeight = 0
-					// //#ifdef MP-WEIXIN
-					// dWidth = Number(that.cWidth)
-					// dHeight = Number(that.cHeight)
-					// //#endif
-					// //#ifdef APP-PLUS
-					// dWidth = Math.round(Number(that.cWidth) / Number(sysInfo.pixelRatio))
-					// dHeight = Math.round(Number(that.cHeight) / Number(sysInfo.pixelRatio))
-					// //#endif
 					uni.canvasToTempFilePath({
 						width: Number(that.cWidth),
 						height: Number(that.cHeight),
 						destWidth: Number(that.cWidth),
 						destHeight: Number(that.cHeight),
-						// destWidth: dWidth,
-						// destHeight: dHeight,
 						canvasId: '_myCanvas',
 						fileType: 'jpg',
 						quality: Number(that.ql),
@@ -184,6 +179,9 @@ export default {
 								}, function (e) {
 									that._err(e)
 								});
+								//#endif
+								//#ifdef H5
+								that._result(res.tempFilePath)
 								//#endif
 							} else {
 								that._result(res.tempFilePath)
