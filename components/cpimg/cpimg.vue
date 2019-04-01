@@ -111,7 +111,7 @@ export default {
 					scaleWidth = image.width / oW
 					scaleHeight = image.height / oH
 				}
-				const ctx = uni.createCanvasContext('_myCanvas');
+				const ctx = uni.createCanvasContext('_myCanvas',that);
 				that.cWidth = image.width;
 				that.cHeight = image.height;
 				// 旋转图片
@@ -140,57 +140,66 @@ export default {
 						break;
 				}
 				ctx.draw(false, () => {
-					uni.canvasToTempFilePath({
-						width: Number(that.cWidth),
-						height: Number(that.cHeight),
-						destWidth: Number(that.cWidth),
-						destHeight: Number(that.cHeight),
-						canvasId: '_myCanvas',
-						fileType: 'jpg',
-						quality: Number(that.ql),
-						success: function (res) {
-							if (that.type == 'base64') {
-								let img = '';
-								// let platform = uni.getSystemInfoSync().platform
-								// if (platform == 'ios') {
-								// 	// 兼容处理：ios获取的图片上下颠倒
-								// 	img = that._reverseImgData(res)
-								// }
-								//#ifdef MP-WEIXIN
-								img = 'data:image/jpeg;base64,' + wx.getFileSystemManager().readFileSync(res.tempFilePath, "base64")
-								that._result(img)
-								//#endif
-								//#ifdef APP-PLUS
-								// console.log(JSON.stringify(res))
-								plus.io.resolveLocalFileSystemURL(res.tempFilePath, function (entry) {
-									entry.file(function (file) {
-										let fileReader = new plus.io.FileReader();
-										// console.log("getFile:" + JSON.stringify(file));
-										fileReader.readAsDataURL(file);
-										fileReader.onloadend = function (evt) {
-											// console.log(JSON.stringify(evt))
-											if (evt.target.readyState == 2) {
-												that._result(evt.target.result)
-											} else {
-												that._err(evt)
+					let time = 0;
+					// #ifndef MP-WEIXIN
+					time = 0;
+					// #endif
+					// #ifdef MP-WEIXIN
+					time = 500;
+					// #endif
+					setTimeout(() => {
+						uni.canvasToTempFilePath({
+							width: Number(that.cWidth),
+							height: Number(that.cHeight),
+							destWidth: Number(that.cWidth),
+							destHeight: Number(that.cHeight),
+							canvasId: '_myCanvas',
+							fileType: 'jpg',
+							quality: Number(that.ql),
+							success: function (res) {
+								if (that.type == 'base64') {
+									let img = '';
+									// let platform = uni.getSystemInfoSync().platform
+									// if (platform == 'ios') {
+									// 	// 兼容处理：ios获取的图片上下颠倒
+									// 	img = that._reverseImgData(res)
+									// }
+									//#ifdef MP-WEIXIN
+									img = 'data:image/jpeg;base64,' + wx.getFileSystemManager().readFileSync(res.tempFilePath, "base64")
+									that._result(img)
+									//#endif
+									//#ifdef APP-PLUS
+									// console.log(JSON.stringify(res))
+									plus.io.resolveLocalFileSystemURL(res.tempFilePath, function (entry) {
+										entry.file(function (file) {
+											let fileReader = new plus.io.FileReader();
+											// console.log("getFile:" + JSON.stringify(file));
+											fileReader.readAsDataURL(file);
+											fileReader.onloadend = function (evt) {
+												// console.log(JSON.stringify(evt))
+												if (evt.target.readyState == 2) {
+													that._result(evt.target.result)
+												} else {
+													that._err(evt)
+												}
 											}
-										}
+										});
+									}, function (e) {
+										that._err(e)
 									});
-								}, function (e) {
-									that._err(e)
-								});
-								//#endif
-								//#ifdef H5
-								that._result(res.tempFilePath)
-								//#endif
-							} else {
-								that._result(res.tempFilePath)
+									//#endif
+									//#ifdef H5
+									that._result(res.tempFilePath)
+									//#endif
+								} else {
+									that._result(res.tempFilePath)
+								}
+							},
+							fail: function (e) {
+								that._err(e)
 							}
-						},
-						fail: function (e) {
-							that._err(e)
-						}
-					})
+						},that)
+					}, time);
 				});
 			}
 		},
