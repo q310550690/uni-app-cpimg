@@ -48,7 +48,6 @@ export default {
 			if (that.src == '') {
 				uni.chooseImage({
 					count: 1, //默认9
-					// sizeType: ['original'], //可以指定是原图还是压缩图，默认二者都有
 					sizeType: ['compressed'], //可以指定是原图还是压缩图，默认二者都有
 					success: function (res) {
 						uni.showLoading({
@@ -111,7 +110,7 @@ export default {
 					scaleWidth = image.width / oW
 					scaleHeight = image.height / oH
 				}
-				const ctx = uni.createCanvasContext('_myCanvas',that);
+				const ctx = uni.createCanvasContext('_myCanvas', that);
 				that.cWidth = image.width;
 				that.cHeight = image.height;
 				// 旋转图片
@@ -198,7 +197,7 @@ export default {
 							fail: function (e) {
 								that._err(e)
 							}
-						},that)
+						}, that)
 					}, time);
 				});
 			}
@@ -232,9 +231,9 @@ export default {
 
 <style>
 ._cpimg {
-  position: fixed;
-  top: -99999upx;
-  left: -99999upx;
-  z-index: -99999;
+	position: fixed;
+	top: -99999upx;
+	left: -99999upx;
+	z-index: -99999;
 }
 </style>
