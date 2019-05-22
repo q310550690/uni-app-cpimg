@@ -85,7 +85,6 @@ export default {
 			uni.getImageInfo({
 				src: resPath,
 				success: function (image) {
-					console.log(image)
 					// 如果图片的大小大于设定值才压缩
 					uni.getFileInfo({
 						filePath: resPath,
@@ -173,7 +172,7 @@ export default {
 				ctxTime = 10;
 				// #endif
 				// #ifdef H5
-				ctxTime = that.maxWidth / 5;
+				ctxTime = cTime();
 				// #endif
 				setTimeout(() => {
 					ctx.drawImage(resPath, 0, 0, ctxWidth, ctxHeight)
@@ -183,7 +182,7 @@ export default {
 						time = 10;
 						// #endif
 						// #ifdef MP-WEIXIN
-						time = that.maxWidth / 5;
+						time = cTime();
 						// #endif
 						setTimeout(() => {
 							uni.canvasToTempFilePath({
@@ -236,6 +235,16 @@ export default {
 						}, time);
 					});
 				}, ctxTime);
+				function cTime() {
+					let time = that.maxWidth / 5
+					if (time >= 600) {
+						return 600
+					} else if (time <= 100) {
+						return 100
+					} else {
+						return time
+					}
+				}
 			}
 		},
 		// ios翻转图片
