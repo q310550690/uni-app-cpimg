@@ -2,7 +2,7 @@
 	<view class="content">
 		<button @tap="addPhoto">添加图片</button>
 		<!-- <cpimg ref="cpimg" @ok="cpimgOk" @err="cpimgErr" size="500" maxWidth="300" ql="0.5" type="base64"></cpimg> -->
-		<cpimg ref="cpimg" @result="cpimgOk" @err="cpimgErr" :size="500" :maxWidth="1000" :ql="0.9" type="url"></cpimg>
+		<cpimg ref="cpimg" @result="cpimgOk" @err="cpimgErr" :number="2" :fixOrientation="true" :size="500" :maxWidth="1000" :ql="0.9" type="url" />
 		<view class="img">
 			<image v-for="(v,i) in src" :key="i" :src="v" class="showimg" mode="aspectFit" />
 		</view>

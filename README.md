@@ -13,7 +13,7 @@ export default {
 ```
 在 `template` 中使用
 ``` javascript
-<cpimg ref="cpimg" @result="cpimgOk" @err="cpimgErr" number="1" fixOrientation="true" size="500" maxWidth="1000" ql="0.9" type="url"></cpimg>
+<cpimg ref="cpimg" @result="cpimgOk" @err="cpimgErr" :number="2" :fixOrientation="true" :size="500" :maxWidth="1000" :ql="0.9" type="url"></cpimg>
 ```
 
 ### 属性

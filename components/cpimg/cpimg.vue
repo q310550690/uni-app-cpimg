@@ -27,7 +27,7 @@ export default {
 		},
 		number: {
 			type: Number,
-			default: 10
+			default: 1
 		},
 		fixOrientation: {
 			type: Boolean,
@@ -73,6 +73,9 @@ export default {
 		// 压缩图片
 		_cpImg() {
 			let that = this, resPath = _cgFile[_index];
+			// #ifdef APP-PLUS
+			uni.hideLoading();
+			// #endif
 			uni.showLoading({
 				title: `图片压缩中 ${_index + 1}/${_cgFile.length}`,
 				mask: true
@@ -127,6 +130,44 @@ export default {
 				}
 				ctxWidth = oW * scaleWidth
 				ctxHeight = oH * scaleHeight
+				const ctx = uni.createCanvasContext('_myCanvas', that);
+				that.cWidth = image.width;
+				that.cHeight = image.height;
+				// 图片旋转修正，只有H5有效
+				if (that.fixOrientation) {
+					// 旋转图片
+					let ot = image.orientation
+					if ([5, 6, 7, 8, 'right', 'left', 'right-mirrored', 'left-mirrored'].indexOf(ot) > -1) {
+						that.cWidth = image.height;
+						that.cHeight = image.width;
+					}
+					// 代码参考 https://stackoverflow.com/questions/19463126/how-to-draw-photo-with-correct-orientation-in-canvas-after-capture-photo-by-usin
+					if (ot == 2 || ot == "up-mirrored") {
+						ctx.translate(ctxWidth, 0);
+						ctx.scale(-1, 1);
+					} else if (ot == 3 || ot == "down") {
+						ctx.translate(ctxWidth, ctxHeight);
+						ctx.rotate(Math.PI);
+					} else if (ot == 4 || ot == "down-mirrored") {
+						ctx.translate(0, ctxHeight);
+						ctx.scale(1, -1);
+					} else if (ot == 5 || ot == "right-mirrored") {
+						ctx.rotate(0.5 * Math.PI);
+						ctx.scale(1, -1);
+					} else if (ot == 6 || ot == "right") {
+						ctx.rotate(0.5 * Math.PI);
+						ctx.translate(0, -ctxHeight);
+					} else if (ot == 7 || ot == "left-mirrored") {
+						ctx.rotate(0.5 * Math.PI);
+						ctx.translate(ctxWidth, -ctxHeight);
+						ctx.scale(-1, 1);
+					} else if (ot == 8 || ot == "left") {
+						ctx.rotate(-0.5 * Math.PI);
+						ctx.translate(-ctxWidth, 0);
+					} else {
+						ctx.translate(0, 0);
+					}
+				}
 				let ctxTime = 0;
 				// #ifndef H5
 				ctxTime = 10;
@@ -135,49 +176,11 @@ export default {
 				ctxTime = that.maxWidth / 5;
 				// #endif
 				setTimeout(() => {
-					const ctx = uni.createCanvasContext('_myCanvas', that);
-					that.cWidth = image.width;
-					that.cHeight = image.height;
-					// 图片旋转修正，只有H5有效
-					if (that.fixOrientation) {
-						// 旋转图片
-						let ot = image.orientation
-						if ([5, 6, 7, 8, 'right', 'left', 'right-mirrored', 'left-mirrored'].indexOf(ot) > -1) {
-							that.cWidth = image.height;
-							that.cHeight = image.width;
-						}
-						// 代码参考 https://stackoverflow.com/questions/19463126/how-to-draw-photo-with-correct-orientation-in-canvas-after-capture-photo-by-usin
-						if (ot == 2 || ot == "up-mirrored") {
-							ctx.translate(ctxWidth, 0);
-							ctx.scale(-1, 1);
-						} else if (ot == 3 || ot == "down") {
-							ctx.translate(ctxWidth, ctxHeight);
-							ctx.rotate(Math.PI);
-						} else if (ot == 4 || ot == "down-mirrored") {
-							ctx.translate(0, ctxHeight);
-							ctx.scale(1, -1);
-						} else if (ot == 5 || ot == "right-mirrored") {
-							ctx.rotate(0.5 * Math.PI);
-							ctx.scale(1, -1);
-						} else if (ot == 6 || ot == "right") {
-							ctx.rotate(0.5 * Math.PI);
-							ctx.translate(0, -ctxHeight);
-						} else if (ot == 7 || ot == "left-mirrored") {
-							ctx.rotate(0.5 * Math.PI);
-							ctx.translate(ctxWidth, -ctxHeight);
-							ctx.scale(-1, 1);
-						} else if (ot == 8 || ot == "left") {
-							ctx.rotate(-0.5 * Math.PI);
-							ctx.translate(-ctxWidth, 0);
-						} else {
-							ctx.translate(0, 0);
-						}
-					}
 					ctx.drawImage(resPath, 0, 0, ctxWidth, ctxHeight)
 					ctx.draw(false, () => {
 						let time = 0;
 						// #ifndef MP-WEIXIN
-						time = 0;
+						time = 10;
 						// #endif
 						// #ifdef MP-WEIXIN
 						time = that.maxWidth / 5;
